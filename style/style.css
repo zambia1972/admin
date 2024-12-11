@@ -1,0 +1,100 @@
+#admin-icon {
+    position: fixed;
+    bottom: 50px;
+    right: 250px;
+    width: 100px;
+    height: 100px;
+    background-image: url('https://imgur.com/bxsq8pE.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    z-index: 2147483647;
+    transition: transform 0.3s ease;
+}
+
+#admin-icon:hover {
+    transform: scale(1.1);
+}
+
+#admin-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    height: 700px;
+    background-image: url('https://imgur.com/pP1a9Xp.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: 2147483648;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    overflow: hidden;
+}
+
+#close-popup {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 24px;
+    color: white;
+    background-color: rgba(0,0,0,0.5);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    z-index: 2147483649;
+}
+
+#close-popup:hover {
+    background-color: rgba(0,0,0,0.8);
+}
+
+.admin-toolbar {
+    position: absolute;
+    top: 80px; /* Adjusted to be 80px from the top */
+    left: 0;
+    right: 0;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2147483650;
+}
+
+.admin-toolbar img {
+    width: 50px;
+    height: 50px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.admin-toolbar img:hover {
+    transform: scale(1.1);
+}
+
+.admin-content {
+    padding: 140px 20px 20px; /* Adjust padding to accommodate toolbar */
+    color: black;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+.admin-title {
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#iframe-content {
+    width: 100%;
+    height: calc(100% - 140px); /* Adjust height to fit within the popup */
+    border: none;
+}
+/* Add more styles as needed for your admin tool content */
