@@ -1,0 +1,12 @@
+const popup = document.createElement('div');
+popup.id = 'admin-popup';
+popup.innerHTML = `
+  <div id="close-popup">&times;</div>
+  <div class="admin-toolbar">
+    ...
+  </div>
+  <div class="admin-content">
+    ...
+    <iframe id="iframe-content" src=""></iframe>
+  </div>
+`;

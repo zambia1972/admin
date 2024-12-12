@@ -1,15 +1,21 @@
-// ==UserScript==
+/// ==UserScript==
 // @name         Grepolis Admin Tool
 // @namespace    http://tampermonkey.net/
 // @version      1.6
 // @description  Adds an admin icon to Grepolis and opens a custom popup with toolbar icons
-// @author       Your Name
+// @author       zambia1972
 // @match        https://*.grepolis.com/game/*
 // @grant        GM_addStyle
 // ==/UserScript==
 
 (function() {
     'use strict';
+
+    // GM_addStyle and other functions...
+
+    function initAdminTool() {
+        // ... (implementation)
+    }
 
     // Inline styles with even higher z-index
     GM_addStyle(`
@@ -58,7 +64,7 @@
             background-color: rgba(0,0,0,0.5);
             width: 30px;
             height: 30px;
-            border-radius: 50
+            border-radius: 50%; /* Fixed: added semicolon */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -102,15 +108,19 @@
         }
 
         .admin-title {
-            font-size: 48;
+            font-size: 48px; // Added 'px'
             text-align: center;
             margin-bottom: 20px;
         }
 
         #iframe-content {
-            width: 100%;
-            height: calc(100% - 140px); /* Adjust height to fit within the popup */
-            border: none;
+            position: absolute;
+            top: 140px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 20px;
+            overflow: auto;
         }
     `);
 
@@ -127,7 +137,7 @@
     }
 
     function searchOnGitHub() {
-        fetch('https://api.github.com/repos/boodtrap/admin/git/trees/main')
+        fetch('https://raw.githubusercontent.com/zambia1972/admin/refs/heads/main')
           .then(response => response.json())
           .then(data => {
               // Process the data received from the GitHub API
@@ -141,7 +151,7 @@
 
     function initAdminTool() {
         try {
-            console.log('Gre Admin Tool: Initializing...');
+            console.log('Grepolis Admin Tool: Initializing...');
 
             // Find a suitable parent element in the Grepolis interface
             const parentElement = document.querySelector('#ui_box') || document.body;
@@ -156,55 +166,79 @@
             const popup = document.createElement('div');
             popup.id = 'admin-popup';
             popup.innerHTML = `
-                <div id="close-popup">&times;</div>
-                <div class="admin-toolbar">
-                    <img src="https://imgur.com/GVMs3vO.png" id="icon-home" alt="Home Icon">
-                    <img src="https://imgur.com/GNw9ihs.png" id="icon-forum" alt="Forum Icon">
-                </div>
-                <div class="admin-content">
-                    <h2 class="admin-title">Admin Tool</h2>
-                    <p>Welcome to the Grepolis Admin Tool. Use this interface to manage game settings and player data.</p>
-                </div>
-            `;
+            <div id="close-popup">&times;</div>
+            <div class="admin-toolbar">
+                <img src="https://imgur.com/GVMs3vO.png" id="icon-home" alt="Home Icon">
+                <img src="https://imgur.com/GNw9ihs.png" id="icon-forum" alt="Forum Icon">
+            </div>
+            <div id="iframe-content" style="display: none; width: 100%; height: calc(100% - 140px); overflow: auto; padding-top: 140px;">
+                <h2 class="admin-title">Forum Generator</h2>
+                <p>Hier komt de inhoud van de Forum Generator.</p>
+            </div>
+            <div class="admin-content">
+                <h2 class="admin-title">Admin Tool</h2>
+                <p>Welcome to the Grepolis Admin Tool. Use this interface to manage game settings and player data.</p>
+            </div>
+        `;
             document.body.appendChild(popup);
             console.log('Grepolis Admin Tool: Popup created');
 
             // Add click event to the admin icon
             adminIcon.addEventListener('click', function() {
                 popup.style.display = 'block';
+                document.querySelector('.admin-content').style.display = 'block';
+                document.getElementById('iframe-content').style.display = 'none';
+                console.log('Grepolis Admin Tool: Popup opened');
             });
 
             // Add click event to the close button
-            document.getElementById('close-popup').addEventListener('click', function() {
-                popup.style.display = 'none';
-                console.log('Grepolis Admin Tool: Popup closed');
-            });
+            const closeButton = document.getElementById('close-popup');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    popup.style.display = 'none';
+                    console.log('Grepolis Admin Tool: Popup closed');
+                });
+            } else {
+                console.error('Close button not found');
+            }
 
             // Add click event to the home icon
-            document.getElementById('icon-home').addEventListener('click', function() {
-                window.location.href = window.location.href; // Reload the current page
-                console.log('Grepolis Admin Tool: Returning to current page');
-            });
+            const homeIcon = document.getElementById('icon-home');
+            if (homeIcon) {
+                homeIcon.addEventListener('click', function() {
+                    const iframeContent = document.getElementById('iframe-content');
+                    const adminContent = document.querySelector('.admin-content');
+
+                    if (iframeContent && adminContent) {
+                        iframeContent.style.display = 'none';
+                        adminContent.style.display = 'block';
+                        console.log('Grepolis Admin Tool: Showing Admin Content');
+                    } else {
+                        console.error('Iframe content or admin content not found');
+                    }
+                });
+            } else {
+                console.error('Home icon not found');
+            }
 
             // Add click event to the forum icon
-            document.getElementById('icon-forum').addEventListener('click', function() {
-                const iframe = document.getElementById('iframe-content');
-                if (iframe) {
-                    console.log('Grepolis Admin Tool: Displaying forum editor in popup');
-                    iframe.src = '/src/forumeditor.html'; // Display the forum editor HTML file in the iframe
-                    const popup = document.getElementById('admin-popup');
-                    popup.style.display = 'block'; // Show the popup
-                    console.log('Grepolis Admin Tool: Popup displayed');
-                } else {
-                    console.error('Grepolis Admin Tool: Unable to find iframe element');
-                }
-            });
+            const forumIcon = document.getElementById('icon-forum');
+            if (forumIcon) {
+                forumIcon.addEventListener('click', function() {
+                    const iframeContent = document.getElementById('iframe-content');
+                    const adminContent = document.querySelector('.admin-content');
 
-            // Check visibility of elements
-            setTimeout(() => {
-                checkElementVisibility(adminIcon, 'Admin Icon');
-                checkElementVisibility(popup, 'Popup');
-            }, 1000);
+                    if (iframeContent && adminContent) {
+                        adminContent.style.display = 'none';
+                        iframeContent.style.display = 'block';
+                        console.log('Grepolis Admin Tool: Showing Forum Generator');
+                    } else {
+                        console.error('Iframe content or admin content not found');
+                    }
+                });
+            } else {
+                console.error('Forum icon not found');
+            }
 
             console.log('Grepolis Admin Tool: Script loaded successfully');
         } catch (error) {
@@ -212,7 +246,7 @@
         }
     }
 
-    // Wait for the page to load before initializing
+// Wait for the page to load before initializing
     window.addEventListener('load', function() {
         setTimeout(initAdminTool, 1000); // Wait 1 second after page load
     });
